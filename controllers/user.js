@@ -28,8 +28,8 @@ class User {
     }
 
     static signIn(req, res) {
-        console.log('masuk ke login')
-        console.log(req.body)
+        // console.log('masuk ke login')
+        // console.log(req.body)
         user
             .findOne({
                 email: req.body.email
