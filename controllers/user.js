@@ -1,27 +1,33 @@
 const user = require('../models/user')
-const { OAuth2Client } = require('google-auth-library');
+const {
+    OAuth2Client
+} = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken'),
+    {
+        decrypt
+    } = require('../helpers/bcrypt')
 require('dotenv').config()
 console.log(process.env.CLIENT_ID)
 class User {
     static signUp(req, res) {
+        console.log(req.body)
+        console.log('masuk ke sign up')
         user
             .create({
                 email: req.body.email,
                 password: req.body.password
             })
             .then(function (newUser) {
+                console.log('masuk ke then')
                 res.status(201).json(newUser)
             })
             .catch(function (err) {
                 if (err.errors.email) {
                     res.status(400).json(err.errors.email.message)
-                }
-                else if (err.errors.password) {
+                } else if (err.errors.password) {
                     res.status(400).json(err.errors.password.message)
-                }
-                else {
+                } else {
                     res.status(500).json(err)
                 }
             })
@@ -39,14 +45,12 @@ class User {
                     throw new Error({
                         message: 'Username / password wrong'
                     })
-                }
-                else {
+                } else {
                     if (!decrypt(req.body.password, uLogin.password)) {
                         throw new Error({
                             message: 'Username / password wrong'
                         })
-                    }
-                    else {
+                    } else {
                         let token = jwt.sign({
                             email: uLogin.email,
                             id: uLogin._id
@@ -61,7 +65,7 @@ class User {
             })
             .catch(function (err) {
                 console.log(err)
-                // if (err.errors.message) {
+                // if (err.message) {
                 //     res.status(404).json(err.errors.message)
                 // }
                 // else {
@@ -76,9 +80,9 @@ class User {
         // console.log(process.env.CLIENT_ID)
         var newEmail = ''
         client.verifyIdToken({
-            idToken: req.body.idToken,
-            audience: process.env.CLIENT_ID
-        })
+                idToken: req.body.idToken,
+                audience: process.env.CLIENT_ID
+            })
             .then(function (ticket) {
                 console.log(ticket)
                 console.log('masuk ke then 1')
