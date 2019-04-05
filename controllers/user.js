@@ -2,28 +2,32 @@ const user = require('../models/user')
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 const jwt = require('jsonwebtoken')
+const {decrypt} = require('../helpers/bcrypt')
 require('dotenv').config()
 console.log(process.env.CLIENT_ID)
 class User {
     static signUp(req, res) {
+        console.log('masuk ke signup')
         user
             .create({
                 email: req.body.email,
                 password: req.body.password
             })
             .then(function (newUser) {
+                console.log('then')
                 res.status(201).json(newUser)
             })
             .catch(function (err) {
-                if (err.errors.email) {
-                    res.status(400).json(err.errors.email.message)
-                }
-                else if (err.errors.password) {
-                    res.status(400).json(err.errors.password.message)
-                }
-                else {
-                    res.status(500).json(err)
-                }
+                console.log(err)
+                // if (err.errors.email) {
+                //     res.status(400).json(err.errors.email.message)
+                // }
+                // else if (err.errors.password) {
+                //     res.status(400).json(err.errors.password.message)
+                // }
+                // else {
+                //     res.status(500).json(err)
+                // }
             })
     }
 
@@ -35,18 +39,27 @@ class User {
                 email: req.body.email
             })
             .then(function (uLogin) {
+                console.log(uLogin)
+                console.log('masuk ke then 1')
                 if (!uLogin) {
+                    console.log('masuk ke if 1')
+                    // res.status(404).json({
+
+                    // })
                     throw new Error({
                         message: 'Username / password wrong'
                     })
                 }
                 else {
+                    console.log('masuk ke else 1')
                     if (!decrypt(req.body.password, uLogin.password)) {
+                        console.log('masuk ke if 2')
                         throw new Error({
                             message: 'Username / password wrong'
                         })
                     }
                     else {
+                        console.log('masuk ke else 2')
                         let token = jwt.sign({
                             email: uLogin.email,
                             id: uLogin._id
@@ -60,6 +73,7 @@ class User {
                 }
             })
             .catch(function (err) {
+                console.log('masuk ke error')
                 console.log(err)
                 // if (err.errors.message) {
                 //     res.status(404).json(err.errors.message)
