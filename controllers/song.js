@@ -74,25 +74,13 @@ class Song {
     }
 
     static searchSongFromQuery(req, res) {
-        // musixmatch
-        //     .get(`track.search?apikey=${process.env.API_KEY}&q_${req.body.key}=${req.body.value}`)
-        //     .then(({ data }) => {
-
-        //         res.json(data);
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //         res
-        //             .status(500)
-        //             .json({
-        //                 message: err
-        //             })
-        //     })
-
+        console.log('masuk sini kah? searchsongfromquery')
+        console.log(req.body.value)
         genius
             .search(req.body.value)
             .then((data) => {
-                res.json(data)
+              console.log(data, 'ini consolelog data')
+                res.json(data.hits)
             })
             .catch(err => {
                 res
@@ -103,26 +91,10 @@ class Song {
     }
 
     static getSongFromId(req, res) {
+      console.log('masuk ke songfromid')
+      console.log(req.params)
         let passData = {}
-            // musixmatch
-            //     .get(`track.get?commontrack_id=${req.params.commontrack_id}&apikey=${process.env.API_KEY}`)
-            //     .then(({ data }) => {
-            //         passData.songData = data.message.body;
-            //         return musixmatch
-            //             .get(`track.lyrics.get?commontrack_id=${req.params.commontrack_id}&apikey=${process.env.API_KEY}`)
-            //     })
-            //     .then(({ data }) => {
-            //         passData.lyricData = data.message.body;
-            //         res.json(passData);
-            //     })
-            //     .catch(err => {
-            //         console.log(err)
-            //         res
-            //             .status(500)
-            //             .json({
-            //                 message: err
-            //             })
-            //     })
+            
 
         genius
             .song(req.params.commontrack_id)
@@ -161,15 +133,17 @@ class Song {
     }
   
    static getVids(req, res) {
+    console.log(typeof req.body.title)
     axios({
       method: 'get',
       url: `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${req.body.title}&key=${process.env.YOUTUBE_API}`
     })
       .then(({data}) => {
-        console.log(data)
+        // console.log(data, 'apa data ini?')
         res.json(data.items[0].id.videoId)
       })
       .catch(err => {
+        console.log('masuk errror get vids')
         res.status(500).json(err)
       })
   }

@@ -7,7 +7,7 @@ const express = require('express'),
     routerSong = require('./routes/song'),
     routerUser = require('./routes/user')
 
-// mongoose.connect('mongodb://localhost:27017/musicsz', {useNewUrlParser:true})
+mongoose.connect('mongodb://localhost:27017/musicsz', {useNewUrlParser:true})
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
