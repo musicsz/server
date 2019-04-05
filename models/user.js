@@ -16,7 +16,7 @@ const userSchema = new Schema({
         }, {
             validator: function uniqueEmail(inputEmail) {
                 return new Promise((resolve, reject) => {
-                    this.model('musicsz').findOne({
+                    this.model('Users').findOne({
                         email: inputEmail
                     })
                         .then(function (result) {
@@ -35,8 +35,8 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        minlength: [6, 'Minimal 6 digits'],
-        required: [true, 'Password required']
+        minlength: [6, 'Minimal 11 digits'],
+        required: true
     }
 })
 
@@ -45,6 +45,5 @@ userSchema.pre('save', function (next) {
     next()
 })
 
-const User = mongoose.model('User', userSchema)
-
-module.exports = User
+const Users = mongoose.model('Users', userSchema)
+module.exports = Users
